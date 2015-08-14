@@ -1,0 +1,32 @@
+Riot API Challenge:
+Given two data sets of match IDs, one before the AP Item changes and another one
+ after, create a piece of software to demonstrate changes in AP Item usage.
+
+URL:
+https://na.api.pvp.net/api/lol/na/v2.2/match/***?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887
+
+*** = matchID (taken from the downloaded JSON file)
+
+ENDGAME PLAN:
+For all "finished" AP items, calculate a change in "average # bought per game" 
+before and after the AP item changes.
+
+AP ITEMS TO BE TRACKED:
+Rylai's Crystal Scepter 					(id 3116)
+Rabadon's Deathcap 						(id 3089)
+Void Staff 							(id 3135)
+Liandry's Torment 						(id 3151)
+Zhonya's Hourglass						(id 3157)
+Morellonomicon							(id 3165)
+Athene's Unholy Grail						(id 3174)
+Luden's Echo							(id 3285)
+Archangel's Staff/Seraph's Embrace (will count as 1 item)	(id 3003/3048)
+Rod of Ages							(id 3027)
+Nashor's Tooth							(id 3115)
+Will of the Ancients						(id 3152)
+
+***NOTE: NOT tracking Wooglet's Witchcap due to the match histories only being on SR*********
+
+POSSIBLE EXTENSION(S):
+Track how many players got double/triple/quadra/pentakills with each item for each season
+-i.e. (Rod of Ages was equipped by X number of people who got a pentakill)
