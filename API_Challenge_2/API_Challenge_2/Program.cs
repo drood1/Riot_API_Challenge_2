@@ -50,19 +50,22 @@ namespace API_Challenge_2
             average_per_game = count / num_games;
         }
 
-        public float getAverage()
+        public float getAverage(int num_games)
         {
-            return average_per_game;
+            return (float)count / (float)num_games;
         }
 
     }
 
     class Program
     {
-        static void printAllItemCount(List<Item> item_list)
+        static void printAllItemCount(List<Item> item_list, int n)
         {
             foreach (Item i in item_list)
-                Console.WriteLine("{0} has a count of {1}", i.getName(), i.getCount());
+            {
+                Console.WriteLine("{0} has a total count of {1}", i.getName(), i.getCount());
+                Console.WriteLine("{0} has an average of {1} per game.", i.getName(), i.getAverage(n));
+            }
         }
 
         static void Main(string[] args)
@@ -107,12 +110,13 @@ namespace API_Challenge_2
                 all_ids = (List<int>)ser.Deserialize(file, typeof(List<int>));
             }
 
-            foreach (int x in all_ids)
-            {
-                Console.WriteLine(x);
-            }
+            //foreach (int x in all_ids)
+            //{
+            //    Console.WriteLine(x);
+            //}
 
-
+            //index for traversing the "all_ids" list
+            int match_index = 0;
             int game_count = 0;
 
             string match_id;
@@ -133,15 +137,12 @@ namespace API_Challenge_2
             //infinitely loop to allow for testing on any number of items
             while (true)
             {
-                Console.WriteLine("Please give a match id or type 'exit' to exit.");
-                match_id = Console.ReadLine().ToString();
-                if (match_id == "exit")
-                    break;
-                Console.WriteLine("\nmatch_id number is {0}", match_id);
+                match_id = all_ids[match_index].ToString();
+                //Console.WriteLine("\nmatch_id number is {0}", match_id);
 
                 //FORM URL 
                 full_url = base_match_url + match_id + api_key;
-                Console.WriteLine("URL: {0}\n", full_url);
+                //Console.WriteLine("URL: {0}\n", full_url);
 
                 //CALL API WITH FORMED URL
                 WebRequest request = WebRequest.Create(full_url);
@@ -214,11 +215,16 @@ namespace API_Challenge_2
 
                     }
 
+                    Console.WriteLine("Match id: {0}", all_ids[match_index]);
                     //simple output to show the # of items in the game
-                    printAllItemCount(item_list);
+                    printAllItemCount(item_list, match_index+1);
+
+                    Console.WriteLine("Number of games left to check: {0}", all_ids.Count() - match_index);
 
                     //clear the information variables for the next test
                     match_id = "";
+                    match_index++;
+                    game_count++;
                     words.Clear();
 
                     //blank line to separate matches
