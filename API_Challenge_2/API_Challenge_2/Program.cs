@@ -12,16 +12,15 @@ namespace API_Challenge_2
     class Item
     {
         private string item_name;
-        private int id;
+        private string id;
         private int count = 0;
-        private float average_per_game = 0.0f;
 
         bool pre_rework;
 
         public Item(string n, int i, bool p)
         {
             item_name = n;
-            id = i;
+            id = i.ToString();
             pre_rework = p;
         }
 
@@ -40,14 +39,9 @@ namespace API_Challenge_2
             return count;
         }
 
-        public int getId()
+        public string getId()
         {
             return id;
-        }
-
-        public void calculateAverage(int num_games)
-        {
-            average_per_game = count / num_games;
         }
 
         public float getAverage(int num_games)
@@ -70,7 +64,7 @@ namespace API_Challenge_2
 
         static void Main(string[] args)
         {
-            //set up the item class objects for the "fully built" AP items 
+            //set up the item class objects for the "fully built" AP items
             //**************(POST-REWORK)************
             Item Rylai = new Item("Rylai's Crystal Scepter", 3116, true);
             Item Rabadon = new Item("Rabadon's Deathcap", 3089, true);
@@ -101,46 +95,29 @@ namespace API_Challenge_2
             item_list.Add(Nashor);
             item_list.Add(WotA);
 
-
             List<int> all_ids = new List<int>();
-            //BEAR IN MIND THIS IS USING THE LOCATION OF THE JSON FILE(S) ON KARL'S COMPUTER
-            using (StreamReader file = File.OpenText(@"C:\Users\Karl Olsen\Desktop\API_Challenge\AP_ITEM_DATASET\5.11\NORMAL_5X5\NA.json"))
+
+            using (StreamReader file = File.OpenText(@"..\..\..\..\AP_ITEM_DATASET\5.11\NORMAL_5X5\NA.json"))
             {
                 JsonSerializer ser = new JsonSerializer();
                 all_ids = (List<int>)ser.Deserialize(file, typeof(List<int>));
             }
-
-            //foreach (int x in all_ids)
-            //{
-            //    Console.WriteLine(x);
-            //}
-
+            
             //index for traversing the "all_ids" list
             int match_index = 0;
             int game_count = 0;
 
-            string match_id;
-
-            string base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
-            string api_key = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
+            const string base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
+            const string api_key = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
             string full_url;
-            string full_match_information;
 
-
-            //characters to "ignore" while reading the item's information
-            char[] delimiters = { '}', '{', ':', '[', ']', ',', '\"', ';', '(', ')', '<', '>' };
-            //the words that are "read" in the item's information
-            string[] word_array;
-            //"cleaner" version of word_array
-            List<string> words = new List<string>();
-
-            //infinitely loop to allow for testing on any number of items
-            while (true)
+            // loop on all data
+            while (match_index < all_ids.Count())
             {
-                match_id = all_ids[match_index].ToString();
+                string match_id = all_ids[match_index].ToString();
                 //Console.WriteLine("\nmatch_id number is {0}", match_id);
 
-                //FORM URL 
+                //FORM URL
                 full_url = base_match_url + match_id + api_key;
                 //Console.WriteLine("URL: {0}\n", full_url);
 
@@ -155,6 +132,7 @@ namespace API_Challenge_2
                 {
                     response = ex.Response as HttpWebResponse;
                 }
+
                 //check that the match_id provided is valid
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -164,77 +142,70 @@ namespace API_Challenge_2
                 {
                     //COLLECT RELEVANT DATA FROM THE API
                     Stream dataStream = response.GetResponseStream();
-                    StreamReader reader = new StreamReader(dataStream);
-                    full_match_information = reader.ReadToEnd();
-
-                    word_array = full_match_information.Split(delimiters);
-
-                    //cleaning up the blank spots and unwanted strings that tokenizing the original string created
-                    for (int i = 0; i < word_array.Length; i++)
+                    JsonTextReader reader = new JsonTextReader(new StreamReader(dataStream));
+                    while (reader.Read())
                     {
-                        if (word_array[i] != "")
-                            words.Add(word_array[i]);
-                    }
-
-
-                    Console.WriteLine("*********************************");
-                    //search through the match's items for each character to find any of the relevant items' ids
-                    for (int i = 0; i < words.Count(); i++)
-                    {
-                        //extract the item's name
-                        if (words[i] == "item0" || words[i] == "item1" || words[i] == "item2" || words[i] == "item3" || words[i] == "item4" || words[i] == "item5")
+                        if (reader != null)
                         {
-                            if (words[i + 1] == Rylai.getId().ToString())
-                                Rylai.Add();
-                            if (words[i + 1] == Rabadon.getId().ToString())
-                                Rabadon.Add();
-                            if (words[i + 1] == Void_Staff.getId().ToString())
-                                Void_Staff.Add();
-                            if (words[i + 1] == Liandry.getId().ToString())
-                                Liandry.Add();
-                            if (words[i + 1] == Zhonya.getId().ToString())
-                                Zhonya.Add();
-                            if (words[i + 1] == Morello.getId().ToString())
-                                Morello.Add();
-                            if (words[i + 1] == Athene.getId().ToString())
-                                Athene.Add();
-                            if (words[i + 1] == Luden.getId().ToString())
-                                Luden.Add();
-                            if (words[i + 1] == Archangel.getId().ToString())
-                                Archangel.Add();
-                            if (words[i + 1] == Seraph.getId().ToString())
-                                Seraph.Add();
-                            if (words[i + 1] == RoA.getId().ToString())
-                                RoA.Add();
-                            if (words[i + 1] == Nashor.getId().ToString())
-                                Nashor.Add();
-                            if (words[i + 1] == WotA.getId().ToString())
-                                WotA.Add();
+                            // find all item fields
+                            string name = (reader.Value ?? "").ToString();
+                            if (name.Length == 5)
+                            {
+                                if (name.Substring(0, 4) == "item")
+                                {
+                                    // get item id
+                                    reader.Read();
+                                    if (reader == null)
+                                    {
+                                        Console.WriteLine("Could not get item ID. Skipping.");
+                                        continue;
+                                    }
+
+                                    string item_id = (reader.Value ?? "").ToString();
+
+                                    // add item to stats
+                                    if (item_id == Rylai.getId())
+                                        Rylai.Add();
+                                    else if (item_id == Rabadon.getId())
+                                        Rabadon.Add();
+                                    else if (item_id == Void_Staff.getId())
+                                        Void_Staff.Add();
+                                    else if (item_id == Liandry.getId())
+                                        Liandry.Add();
+                                    else if (item_id == Zhonya.getId())
+                                        Zhonya.Add();
+                                    else if (item_id == Morello.getId())
+                                        Morello.Add();
+                                    else if (item_id == Athene.getId())
+                                        Athene.Add();
+                                    else if (item_id == Luden.getId())
+                                        Luden.Add();
+                                    else if (item_id == Archangel.getId())
+                                        Archangel.Add();
+                                    else if (item_id == Seraph.getId())
+                                        Seraph.Add();
+                                    else if (item_id == RoA.getId())
+                                        RoA.Add();
+                                    else if (item_id == Nashor.getId())
+                                        Nashor.Add();
+                                    else if (item_id == WotA.getId())
+                                        WotA.Add();
+                                }
+                            }
                         }
-
-
                     }
 
-                    Console.WriteLine("Match id: {0}", all_ids[match_index]);
                     //simple output to show the # of items in the game
+                    Console.WriteLine("Match id: {0}", all_ids[match_index]);
                     printAllItemCount(item_list, match_index+1);
-
-                    Console.WriteLine("Number of games left to check: {0}", all_ids.Count() - match_index);
-
-                    //clear the information variables for the next test
-                    match_id = "";
+                    Console.WriteLine("Number of games left to check: {0}\n", all_ids.Count() - match_index);
+                    
                     match_index++;
                     game_count++;
-                    words.Clear();
 
-                    //blank line to separate matches
-                    Console.WriteLine("\n");
                 }
-                //end of infinite loop
             }
-
             Console.WriteLine("Goodbye.");
-
         }
     }
 }
