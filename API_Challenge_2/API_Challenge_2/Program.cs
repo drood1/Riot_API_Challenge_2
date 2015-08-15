@@ -64,8 +64,8 @@ namespace API_Challenge_2
 
         static void Main(string[] args)
         {
-            //set up the item class objects for the "fully built" AP items
-            //**************(POST-REWORK)************
+            // set up the item class objects for the "fully built" AP items
+            // **************(POST-REWORK)************
             Item Rylai = new Item("Rylai's Crystal Scepter", 3116, true);
             Item Rabadon = new Item("Rabadon's Deathcap", 3089, true);
             Item Void_Staff = new Item("Void Staff", 3135, true);
@@ -95,33 +95,37 @@ namespace API_Challenge_2
             item_list.Add(Nashor);
             item_list.Add(WotA);
 
-            List<int> all_ids = new List<int>();
+            List<string> all_ids = new List<string>();
 
             using (StreamReader file = File.OpenText(@"..\..\..\..\AP_ITEM_DATASET\5.11\NORMAL_5X5\NA.json"))
             {
                 JsonSerializer ser = new JsonSerializer();
-                all_ids = (List<int>)ser.Deserialize(file, typeof(List<int>));
+                all_ids = (List<string>)ser.Deserialize(file, typeof(List<string>));
             }
             
-            //index for traversing the "all_ids" list
-            int match_index = 0;
-            int game_count = 0;
+            // index for traversing the "all_ids" list
+            // int match_index = 0;
+            // int game_count = 0;
 
             const string base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
             const string api_key = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
             string full_url;
 
-            // loop on all data
-            while (match_index < all_ids.Count())
+            // loop on data
+            // while (match_index < all_ids.Count())
+            for(int game_count = 0; game_count < 100; game_count++)
             {
-                string match_id = all_ids[match_index].ToString();
-                //Console.WriteLine("\nmatch_id number is {0}", match_id);
+                Random rng = new Random();
+                int match_index = rng.Next(0, all_ids.Count());
 
-                //FORM URL
+                string match_id = all_ids[match_index];
+                Console.WriteLine("game {0,-4} has index {1,4}, which is match {2}", game_count, match_index, match_id);
+
+                // FORM URL
                 full_url = base_match_url + match_id + api_key;
                 //Console.WriteLine("URL: {0}\n", full_url);
 
-                //CALL API WITH FORMED URL
+                // CALL API WITH FORMED URL
                 WebRequest request = WebRequest.Create(full_url);
                 HttpWebResponse response;
                 try
@@ -133,14 +137,14 @@ namespace API_Challenge_2
                     response = ex.Response as HttpWebResponse;
                 }
 
-                //check that the match_id provided is valid
+                // check that the match_id provided is valid
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    Console.WriteLine("{0} is an invalid match id, please enter a valid match id\n", match_id);
+                    Console.WriteLine("{0} is an invalid match id, please enter a valid match id", match_id);
                 }
                 else
                 {
-                    //COLLECT RELEVANT DATA FROM THE API
+                    // COLLECT RELEVANT DATA FROM THE API
                     Stream dataStream = response.GetResponseStream();
                     JsonTextReader reader = new JsonTextReader(new StreamReader(dataStream));
                     while (reader.Read())
@@ -196,13 +200,12 @@ namespace API_Challenge_2
                     }
 
                     //simple output to show the # of items in the game
-                    Console.WriteLine("Match id: {0}", all_ids[match_index]);
-                    printAllItemCount(item_list, match_index+1);
-                    Console.WriteLine("Number of games left to check: {0}\n", all_ids.Count() - match_index);
+                    // Console.WriteLine("Match id: {0}", all_ids[match_index]);
+                    // printAllItemCount(item_list, match_index+1);
+                    // Console.WriteLine("Number of games left to check: {0}\n", all_ids.Count() - match_index);
                     
-                    match_index++;
-                    game_count++;
-
+                    // match_index++;
+                    // game_count++;
                 }
             }
             Console.WriteLine("Goodbye.");
