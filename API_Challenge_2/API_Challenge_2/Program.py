@@ -2,7 +2,7 @@ import json
 import os
 import urllib2
 
-filename = os.getcwd() + "../../AP_ITEM_DATASET/5.11/NORMAL_5X5/NA.json"
+filename = "../../AP_ITEM_DATASET/5.11/NORMAL_5X5/NA.json"
 base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/"
 api_key = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887"
 
@@ -65,7 +65,7 @@ def main():
         for match_id in json.load(jsonfile):
             # FORM URL
             full_url = base_match_url + str(match_id) + api_key
-            print("URL: {0}".format(full_url))
+            #print("URL: {0}".format(full_url))
 
             # CALL API WITH FORMED URL
             response = ""

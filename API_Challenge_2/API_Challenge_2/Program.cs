@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace API_Challenge_2
 {
@@ -96,7 +97,21 @@ namespace API_Challenge_2
             item_list.Add(RoA);
             item_list.Add(Nashor);
             item_list.Add(WotA);
-            
+
+
+            List<int> all_ids = new List<int>();
+            //BEAR IN MIND THIS IS USING THE LOCATION OF THE JSON FILE(S) ON KARL'S COMPUTER
+            using (StreamReader file = File.OpenText(@"C:\Users\Karl Olsen\Desktop\API_Challenge\AP_ITEM_DATASET\5.11\NORMAL_5X5\NA.json"))
+            {
+                JsonSerializer ser = new JsonSerializer();
+                all_ids = (List<int>)ser.Deserialize(file, typeof(List<int>));
+            }
+
+            foreach (int x in all_ids)
+            {
+                Console.WriteLine(x);
+            }
+
 
             int game_count = 0;
 
