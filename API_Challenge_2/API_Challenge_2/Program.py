@@ -62,7 +62,7 @@ def main():
     while (True):
         match_id = raw_input("Please give a match id or type 'exit' to exit.")
         if (match_id == "exit"):
-            break       # why not continue?
+            break
 
         print("match_id number is {0}".format(match_id))
 
