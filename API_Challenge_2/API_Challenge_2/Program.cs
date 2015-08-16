@@ -53,6 +53,11 @@ namespace API_Challenge_2
 
     class Program
     {
+        private const string base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
+        private const string api_key        = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
+        // private const string src_file = @"../../../../AP_ITEM_DATASET/5.11/NORMAL_5X5/NA.json";     // for local copy
+        private const string src_file = @"./AP_ITEM_DATASET/5.11/NORMAL_5X5/NA.json";               // for Travis-CI
+
         static void printAllItemCount(List<Item> item_list, int n)
         {
             foreach (Item i in item_list)
@@ -62,8 +67,14 @@ namespace API_Challenge_2
             }
         }
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
+            if (!File.Exists(src_file))
+            {
+                Console.WriteLine("File {0} does not exist", src_file);
+                return 1;
+            }
+
             // set up the item class objects for the "fully built" AP items
             // **************(POST-REWORK)************
             Item Rylai = new Item("Rylai's Crystal Scepter", 3116, true);
@@ -97,18 +108,16 @@ namespace API_Challenge_2
 
             List<string> all_ids = new List<string>();
 
-            using (StreamReader file = File.OpenText(@"..\..\..\..\AP_ITEM_DATASET\5.11\NORMAL_5X5\NA.json"))
+            using (StreamReader file = File.OpenText(src_file))
             {
                 JsonSerializer ser = new JsonSerializer();
                 all_ids = (List<string>)ser.Deserialize(file, typeof(List<string>));
             }
-            
+
             // index for traversing the "all_ids" list
             // int match_index = 0;
             // int game_count = 0;
 
-            const string base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
-            const string api_key = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
             string full_url;
 
             // loop on data
@@ -203,12 +212,14 @@ namespace API_Challenge_2
                     // Console.WriteLine("Match id: {0}", all_ids[match_index]);
                     // printAllItemCount(item_list, match_index+1);
                     // Console.WriteLine("Number of games left to check: {0}\n", all_ids.Count() - match_index);
-                    
+
                     // match_index++;
                     // game_count++;
                 }
             }
+
             Console.WriteLine("Goodbye.");
+            return 0;
         }
     }
 }
