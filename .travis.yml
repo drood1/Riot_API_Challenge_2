@@ -1,0 +1,9 @@
+language: csharp
+solution: API_Challenge_2/API_Challenge_2.sln
+
+mono:
+    - latest
+
+script:
+    - xbuild /p:Configuration=Debug API_Challenge_2/API_Challenge_2.sln
+    - mono ./API_Challenge_2/API_Challenge_2/bin/Debug/API_Challenge_2.exe
