@@ -57,6 +57,7 @@ namespace API_Challenge_2
         private const string api_key        = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
         // private const string src_file = @"../../../../AP_ITEM_DATASET/5.11/NORMAL_5X5/NA.json";     // for local copy
         private const string src_file = @"./AP_ITEM_DATASET/5.11/NORMAL_5X5/NA.json";               // for Travis-CI
+        private const int    total_count = 100;
 
         static void printAllItemCount(List<Item> item_list, int n)
         {
@@ -114,24 +115,30 @@ namespace API_Challenge_2
                 all_ids = (List<string>)ser.Deserialize(file, typeof(List<string>));
             }
 
+            List<int> used_matches = new List<int>();
+            Random rng = new Random();
+
             // index for traversing the "all_ids" list
             // int match_index = 0;
             // int game_count = 0;
 
-            string full_url;
-
             // loop on data
             // while (match_index < all_ids.Count())
-            for(int game_count = 0; game_count < 100; game_count++)
+            for(int game_count = 0; game_count < total_count; game_count++)
             {
-                Random rng = new Random();
-                int match_index = rng.Next(0, all_ids.Count());
+                // get random unused match
+                int match_index;
+                do
+                {
+                    match_index = rng.Next(0, all_ids.Count());
+                } while (used_matches.Contains(match_index));
+                used_matches.Add(match_index);
 
                 string match_id = all_ids[match_index];
-                Console.WriteLine("game {0,-4} has index {1,4}, which is match {2}", game_count, match_index, match_id);
+                Console.WriteLine("game {0,-4}: index {1,4}, match {2}", game_count, match_index, match_id);
 
                 // FORM URL
-                full_url = base_match_url + match_id + api_key;
+                string full_url = base_match_url + match_id + api_key;
                 //Console.WriteLine("URL: {0}\n", full_url);
 
                 // CALL API WITH FORMED URL
@@ -218,7 +225,10 @@ namespace API_Challenge_2
                 }
             }
 
-            Console.WriteLine("Goodbye.");
+            Console.WriteLine("");
+            printAllItemCount(item_list, 100);
+            Console.WriteLine("\nGoodbye.");
+
             return 0;
         }
     }
