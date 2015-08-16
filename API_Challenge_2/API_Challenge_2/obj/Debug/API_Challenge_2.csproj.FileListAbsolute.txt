@@ -1,8 +1,0 @@
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\bin\Debug\API_Challenge_2.exe.config
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\bin\Debug\API_Challenge_2.exe
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\bin\Debug\API_Challenge_2.pdb
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\obj\Debug\API_Challenge_2.csprojResolveAssemblyReference.cache
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\obj\Debug\API_Challenge_2.exe
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\obj\Debug\API_Challenge_2.pdb
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Karl Olsen\Desktop\API_Challenge\API_Challenge_2\API_Challenge_2\bin\Debug\Newtonsoft.Json.xml
