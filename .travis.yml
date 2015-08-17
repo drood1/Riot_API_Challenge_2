@@ -6,4 +6,4 @@ mono:
 
 script:
     - xbuild /p:Configuration=Debug API_Challenge_2/API_Challenge_2.sln
-    - mono ./API_Challenge_2/API_Challenge_2/bin/Debug/API_Challenge_2.exe
+    - mono ./API_Challenge_2/API_Challenge_2/bin/Debug/API_Challenge_2.exe NA NORMAL_5X5 ./AP_ITEM_DATASET ./cache
