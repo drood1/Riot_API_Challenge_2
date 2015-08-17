@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -106,25 +107,81 @@ namespace API_Challenge_2
         }
     }
 
+    class RequestBlock
+    {
+        private int req;                            // number of requests per time
+        private int req_per_secs;                   // time for req
+        private int max;                            // maximum number of requests per time
+        private int max_per_secs;                   // time for max
+
+        private int count;                          // count of requests within req_per_secs
+        private System.Timers.Timer count_time;     // how much of req_per_secs has passed
+        private int total;                          // count of max requests within max_per_secs
+        private System.Timers.Timer total_time;     // how much of max_per_secs has passed
+
+        public RequestBlock(int r, int rps, int m, int mps)
+        {
+            req = r;
+            req_per_secs = rps * 1000;
+            max = m;
+            max_per_secs = mps * 1000;
+
+            count = 0;
+            count_time = new System.Timers.Timer(req_per_secs);
+            count_time.Elapsed += reset_req;
+            count_time.AutoReset = true;
+            count_time.Enabled = true;
+
+            total = 0;
+            total_time = new System.Timers.Timer(max_per_secs);
+            total_time.Elapsed += reset_max;
+            total_time.AutoReset = true;
+            total_time.Enabled = true;
+        }
+
+        private void reset_req(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            count = 0;
+        }
+
+        private void reset_max(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            total = 0;
+        }
+
+        public void block()
+        {
+            count++;
+            total++;
+            while (((count >= req) && count_time.Enabled) || ((total >= max) && total_time.Enabled))
+            {
+                Thread.Sleep(251);
+            }
+        }
+    }
+
     class Program
     {
         private const string base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
-        private const string api_key = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
-        private const int total_count = 100;
-        private const string pre      = "5.11";        // pre-rework
-        private const string post     = "5.14";        // post-rework
-        private static string[] types = new string[] { "NORMAL_5X5", "RANKED_SOLO" };
+        private const string api_key        = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
+        private const int total_count       = 100;
+        private const string pre            = "5.11";        // pre-rework
+        private const string post           = "5.14";        // post-rework
+        private static string[] types       = new string[] { "NORMAL_5X5", "RANKED_SOLO" };
 
         // download data or load from cache
         // returns file name (unfortunately)
-        static string cache(string cache_dir, string match_id)
+        static string cache(string cache_dir, string match_id, RequestBlock blocker)
         {
-            // check if data has already been cached
+            // if data is already cached, just return
             string cache_file = cache_dir + "/" + match_id;
             if (File.Exists(cache_file))
             {
                 return cache_file;
             }
+
+            // block request if rate exceeded
+            blocker.block();
 
             // if file doesn't exist, download it
             string full_url = base_match_url + match_id + api_key;
@@ -165,11 +222,11 @@ namespace API_Challenge_2
             }
 
             // parse data
-            return cache(cache_dir, match_id);
+            return cache(cache_dir, match_id, blocker);
         }
 
         // read through single match data
-        static void aggregate(JsonTextReader reader, Items items)
+        static void read(JsonTextReader reader, Items items)
         {
             while (reader.Read())
             {
@@ -198,12 +255,14 @@ namespace API_Challenge_2
         }
 
         // read each file and compile their stats
-        static void calculate_stats(List<string> match_ids, Items items, string cache_dir)
+        static void aggregate(List<string> match_ids, Items items, string cache_dir)
         {
             List<int> used_matches = new List<int>();
             Random rng = new Random();
 
             int availible_match_ids = match_ids.Count();
+
+            RequestBlock blocker = new RequestBlock(10, 10, 500, 600);
 
             // loop on data
             // while (match_index < match_ids.Count())
@@ -231,7 +290,7 @@ namespace API_Challenge_2
                 // FORM URL
                 string full_url = base_match_url + match_id + api_key;
 
-                string cache_file = cache(cache_dir, match_id);
+                string cache_file = cache(cache_dir, match_id, blocker);
                 if (cache_file == null)
                 {
                     game_count--;
@@ -245,7 +304,7 @@ namespace API_Challenge_2
                         JsonTextReader data = new JsonTextReader(file);
                         if (data != null)
                         {
-                            aggregate(data, items);
+                            read(data, items);
                             //simple output to show the # of items in the game
                             // Console.WriteLine("Match id: {0}", all_ids[match_index]);
                             // items.print(game_count + 1);
@@ -329,8 +388,8 @@ namespace API_Challenge_2
             Items pre_rework_data = new Items();
             Items post_rework_data = new Items();
 
-            calculate_stats(pre_match_ids, pre_rework_data, cache_dir + "/" + pre + "/" + type);
-            calculate_stats(post_match_ids, post_rework_data, cache_dir + "/" + post + "/" + type);
+            aggregate(pre_match_ids, pre_rework_data, cache_dir + "/" + pre + "/" + type);
+            aggregate(post_match_ids, post_rework_data, cache_dir + "/" + post + "/" + type);
 
             Console.WriteLine("\nPre-rework Stats");
             pre_rework_data.print(total_count);
