@@ -4,10 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Accord.Statistics.Testing;
 
 namespace API_Challenge_2
 {
@@ -105,6 +104,15 @@ namespace API_Challenge_2
                 Console.WriteLine("{0} has an average of {1} per game.", i.getName(), i.getAverage(n));
             }
         }
+
+        public Item at(int i)
+        {
+            if (i >= item_list.Count())
+            {
+                return null;
+            }
+            return item_list[i];
+        }
     }
 
     class RequestBlock
@@ -164,10 +172,13 @@ namespace API_Challenge_2
     {
         private const string base_match_url = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
         private const string api_key        = "?api_key=72ed6f93-1e5d-47b3-ae92-8c4657887887";
-        private const int total_count       = 100;
-        private const string pre            = "5.11";        // pre-rework
-        private const string post           = "5.14";        // post-rework
-        private static string[] types       = new string[] { "NORMAL_5X5", "RANKED_SOLO" };
+        private static string[] types = new string[] { "NORMAL_5X5", "RANKED_SOLO" };
+        private static string[] regions = { "BR", "EUNE", "EUW", "KR", "LAN", "LAS", "NA", "OCE", "RU", "TR" };
+        private const string pre = "5.11";
+        private const string post = "5.14";
+
+        private const int item_count        = 13;
+        private const int sample_size       = 100;
 
         // download data or load from cache
         // returns file name (unfortunately)
@@ -225,7 +236,7 @@ namespace API_Challenge_2
             return cache(cache_dir, match_id, blocker);
         }
 
-        // read through single match data
+        // read through single match and puts data into items
         static void read(JsonTextReader reader, Items items)
         {
             while (reader.Read())
@@ -266,7 +277,7 @@ namespace API_Challenge_2
 
             // loop on data
             // while (match_index < match_ids.Count())
-            for (int game_count = 0; game_count < total_count; game_count++)
+            for (int game_count = 0; game_count < sample_size; game_count++)
             {
                 // get random unused match
                 int match_index = rng.Next(0, availible_match_ids);
@@ -285,7 +296,7 @@ namespace API_Challenge_2
                 used_matches.Add(match_index);
 
                 string match_id = match_ids[match_index];
-                Console.WriteLine("game {0,-4}: index {1,4}, match {2}", game_count, match_index, match_id);
+                // Console.WriteLine("game {0,-4}: index {1,4}, match {2}", game_count, match_index, match_id);
 
                 // FORM URL
                 string full_url = base_match_url + match_id + api_key;
@@ -308,7 +319,7 @@ namespace API_Challenge_2
                             //simple output to show the # of items in the game
                             // Console.WriteLine("Match id: {0}", all_ids[match_index]);
                             // items.print(game_count + 1);
-                            // Console.WriteLine("Number of games left to check: {0}\n", total_count - game_count + 1);
+                            // Console.WriteLine("Number of games left to check: {0}\n", sample_size - game_count + 1);
                         }
                     }
                     catch(Exception e)
@@ -335,6 +346,15 @@ namespace API_Challenge_2
             string cache_dir = args[3];
 
             // parse commandline arguments
+
+            // make sure region is valid
+            // (currently not useful)
+            if (!regions.Contains(region))
+            {
+                Console.WriteLine("Invaid region: {0}", region);
+                return 1;
+            }
+
             // make sure game type is valid
             if (!types.Contains(type))
             {
@@ -392,10 +412,30 @@ namespace API_Challenge_2
             aggregate(post_match_ids, post_rework_data, cache_dir + "/" + post + "/" + type);
 
             Console.WriteLine("\nPre-rework Stats");
-            pre_rework_data.print(total_count);
+            pre_rework_data.print(sample_size);
 
             Console.WriteLine("\nPost-rework Stats");
-            post_rework_data.print(total_count);
+            post_rework_data.print(sample_size);
+
+            // copy counts out to arrays
+            double[] pre_counts = new double[item_count];
+            double[] post_counts = new double[item_count];
+            for(int i = 0; i < item_count; i++)
+            {
+                pre_counts[i] = pre_rework_data.at(i).getCount();
+                post_counts[i] = post_rework_data.at(i).getCount();
+            }
+
+            ChiSquareTest test = new ChiSquareTest(pre_counts, post_counts, item_count - 1);
+
+            Console.WriteLine("");
+            Console.WriteLine("Pearson's Chi-Square Test for Independence:\n");
+            Console.WriteLine("Sample Size: {0}", sample_size);
+            Console.WriteLine("Degrees of Freedom: {0}", item_count - 1);
+            Console.WriteLine("Signigicance Level: {0}", test.Size);
+            Console.WriteLine("P-Value: {0}", test.PValue);
+            Console.WriteLine("");
+            Console.WriteLine("Difference Significant? {0}", test.Significant);
 
             Console.WriteLine("\nGoodbye.");
             return 0;
