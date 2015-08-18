@@ -195,6 +195,8 @@ namespace API_Challenge_2
             blocker.block();
 
             // if file doesn't exist, download it
+
+            // FORM URL
             string full_url = base_match_url + match_id + api_key;
             // Console.WriteLine("URL: {0}", full_url);
 
@@ -297,9 +299,6 @@ namespace API_Challenge_2
 
                 string match_id = match_ids[match_index];
                 // Console.WriteLine("game {0,-4}: index {1,4}, match {2}", game_count, match_index, match_id);
-
-                // FORM URL
-                string full_url = base_match_url + match_id + api_key;
 
                 string cache_file = cache(cache_dir, match_id, blocker);
                 if (cache_file == null)
@@ -411,19 +410,24 @@ namespace API_Challenge_2
             aggregate(pre_match_ids, pre_rework_data, cache_dir + "/" + pre + "/" + type);
             aggregate(post_match_ids, post_rework_data, cache_dir + "/" + post + "/" + type);
 
-            Console.WriteLine("\nPre-rework Stats");
-            pre_rework_data.print(sample_size);
+            //Console.WriteLine("\nPre-rework Stats");
+            //pre_rework_data.print(sample_size);
 
-            Console.WriteLine("\nPost-rework Stats");
-            post_rework_data.print(sample_size);
+            //Console.WriteLine("\nPost-rework Stats");
+            //post_rework_data.print(sample_size);
+
+            Console.WriteLine("                           |  {0}  |  {1}  |", pre, post);
+            Console.WriteLine("-----------------------------------------------");
 
             // copy counts out to arrays
             double[] pre_counts = new double[item_count];
             double[] post_counts = new double[item_count];
-            for(int i = 0; i < item_count; i++)
+
+            for (int i = 0; i < item_count; i++)
             {
                 pre_counts[i] = pre_rework_data.at(i).getCount();
                 post_counts[i] = post_rework_data.at(i).getCount();
+                Console.WriteLine("{0, -25}  | {1, 6} | {2, 6} |", pre_rework_data.at(i).getName(), pre_counts[i], post_counts[i]);
             }
 
             ChiSquareTest test = new ChiSquareTest(pre_counts, post_counts, item_count - 1);
