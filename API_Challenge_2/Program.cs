@@ -198,7 +198,7 @@ namespace API_Challenge_2
 
             // FORM URL
             string full_url = base_match_url + match_id + api_key;
-            // Console.WriteLine("URL: {0}", full_url);
+            //Console.WriteLine("URL: {0}", full_url);
 
             // CALL API WITH FORMED URL
             WebRequest request = WebRequest.Create(full_url);
@@ -298,7 +298,7 @@ namespace API_Challenge_2
                 used_matches.Add(match_index);
 
                 string match_id = match_ids[match_index];
-                // Console.WriteLine("game {0,-4}: index {1,4}, match {2}", game_count, match_index, match_id);
+                Console.WriteLine("game {0,-4}: index {1,4}, match {2}", game_count, match_index, match_id);
 
                 string cache_file = cache(cache_dir, match_id, blocker);
                 if (cache_file == null)
@@ -417,6 +417,7 @@ namespace API_Challenge_2
             //post_rework_data.print(sample_size);
 
             Console.WriteLine("                           |  {0}  |  {1}  |", pre, post);
+            Console.WriteLine("Item count toals for Patch:|  {0}  |  {1}  |", pre, post);
             Console.WriteLine("-----------------------------------------------");
 
             // copy counts out to arrays
@@ -442,6 +443,9 @@ namespace API_Challenge_2
             Console.WriteLine("Difference Significant? {0}", test.Significant);
 
             Console.WriteLine("\nGoodbye.");
+
+
+
             return 0;
         }
     }
