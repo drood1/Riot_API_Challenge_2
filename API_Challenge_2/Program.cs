@@ -416,7 +416,6 @@ namespace API_Challenge_2
             //Console.WriteLine("\nPost-rework Stats");
             //post_rework_data.print(sample_size);
 
-            Console.WriteLine("                           |  {0}  |  {1}  |", pre, post);
             Console.WriteLine("Item count toals for Patch:|  {0}  |  {1}  |", pre, post);
             Console.WriteLine("-----------------------------------------------");
 
