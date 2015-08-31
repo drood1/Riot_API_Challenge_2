@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <!--Load the AJAX API. Do this only once per web page! -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+	//<link rel="import" href= "API_Challenge_2\Program.cs">
+	//<script src ="API_Challenge_2\Program.cs">
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+
+
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Count');
+      data.addColumn('number', '# Per Game');
+      data.addRows([
+        ['Rylai\'s Crystal Scepter', 3],
+        ['Rabaddon\'s Deathcap', 1],
+        ['Void Staff', 1],
+        ['Liandry\'s Torment', 1],
+		['Zhonya\s Hourglass', 1],
+        ['Morellonomicon', 2],
+		['Athene\'s Unholy Grail', 2],
+		['Luden\'s Echo', 1],
+		['Archangel\'s Staff', 1],
+		['Seraph\'s Embrace', 1],
+		['Rod of Ages', 1],
+		['Nashor\'s Tooth', 1],
+		['Will of the Ancients', 1]
+      ]);
+
+      // Set chart options
+      var options = {'title':'Patch 5.14',
+                     'width':900,
+                     'height':750};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+    </script>
+  </head>
+
+  <body>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div" style="width:900; height:750"></div>
+  </body>
+</html>
