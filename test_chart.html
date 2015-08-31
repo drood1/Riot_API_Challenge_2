@@ -19,23 +19,31 @@
 
       // Create the data table.
       var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Memes');
+      data.addColumn('string', 'Count');
+      data.addColumn('number', '# Per Game');
       data.addRows([
-        ['John Cena', 3],
-        ['Spiderman', 1],
-        ['Cat pics', 1],
-        ['JUST DO IT', 1],
-        ['Rip In Pepperoni', 2]
+        ['Rylai\'s Crystal Scepter', 3],
+        ['Rabaddon\'s Deathcap', 1],
+        ['Void Staff', 1],
+        ['Liandry\'s Torment', 1],
+		['Zhonya\s Hourglass', 1],
+        ['Morellonomicon', 2],
+		['Athene\'s Unholy Grail', 2],
+		['Luden\'s Echo', 1],
+		['Archangel\'s Staff', 1],
+		['Seraph\'s Embrace', 1],
+		['Rod of Ages', 1],
+		['Nashor\'s Tooth', 1],
+		['Will of the Ancients', 1]
       ]);
 
       // Set chart options
-      var options = {'title':'How Many Memes I Made Last Night',
-                     'width':600,
-                     'height':450};
+      var options = {'title':'Patch <INSERT PATCH # HERE>',
+                     'width':900,
+                     'height':750};
 
       // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
       chart.draw(data, options);
     }
     </script>
@@ -43,6 +51,6 @@
 
   <body>
     <!--Div that will hold the pie chart-->
-    <div id="chart_div" style="width:600; height:450"></div>
+    <div id="chart_div" style="width:900; height:750"></div>
   </body>
 </html>
