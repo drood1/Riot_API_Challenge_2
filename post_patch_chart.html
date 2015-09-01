@@ -39,8 +39,10 @@
 
       // Set chart options
       var options = {'title':'Patch 5.14',
-                     'width':900,
-                     'height':750};
+                     'width':375,
+                     'height':300,
+					 'chartArea': {'width': '100%', 'height': '100%'},
+					 'legend': {'position': 'right'}};
 
       // Instantiate and draw our chart, passing in some options.
       var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
@@ -51,6 +53,6 @@
 
   <body>
     <!--Div that will hold the pie chart-->
-    <div id="chart_div" style="width:900; height:750"></div>
+    <div id="chart_div" style="width:600; height:450"></div>
   </body>
 </html>

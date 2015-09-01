@@ -10,6 +10,68 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+	
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>
+	
+	<script type="text/javascript">
+		var toggle = false;
+		var both_charts = false;
+		
+		function numCharts()	{
+			both_charts = ! both_charts;
+			bothCharts();
+		}
+		
+		function changeChart()	{
+			var graph_var = document.getElementById("graph");
+			var second_graph = document.getElementById("graph2");
+			
+			toggle = !toggle;
+		
+			if(toggle == true)	{
+				graph_var.setAttribute('data','pre_patch_chart.html');
+				second_graph.setAttribute('data','post_patch_chart.html');
+			}
+			else	{
+				graph_var.setAttribute('data','post_patch_chart.html');
+				second_graph.setAttribute('data','pre_patch_chart.html');
+			}
+		}
+		
+		function bothCharts()	{
+			var second_graph = document.getElementById("graph2");
+			both_charts = !both_charts;
+		
+			if(both_charts == true)	{
+				document.getElementById("graph2").style.visibility = "visible";
+				//document.getElementById("graph").align = "left";
+			}
+			else	{
+				document.getElementById("graph2").style.visibility = "hidden";
+				//document.getElementById("graph").align = "center";
+			}
+		}
+	</script>
+	
+	<style>
+	 object.hidden{
+		visibility: hidden
+	 }
+	 object.visible{
+		visibility: visible
+	 }
+	 
+	 .div1 {
+		float: left;
+	 }
+	 
+	 .div2 {
+		float: right;
+	 }
+	 
+	</style>
+	
   </head>
   <body>
     <section class="page-header">
@@ -26,11 +88,20 @@
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
 -->
       <!-- <marquee><p>AND HIS NAME IS JASON CENA!!!!</p></marquee> -->
-      <object name="test chart" type="text/html" width="950" height="800" data="pre_patch_chart.html"></object>
-	  <!-- <p> </p> -->
-	  <object name="test chart" type="text/html" width="950" height="800" data="post_patch_chart.html"></object>
-	  <p> </p>
+	  <input type="button" value="Side-by-Side Comparison" onclick="bothCharts()"/>
+	  <input type="button" value="Toggle Patch" onclick="changeChart()"/>
+	  
+	  <p>
+      <object name="test chart" id = "graph" type="text/html" width="400" height="325" data ="pre_patch_chart.html" align="left"></object>
+	  </p>
+	  
+	  <p> 
+      <object class="hidden" name="test chart" id = "graph2" type="text/html" width="400" height="325" data ="post_patch_chart.html" align="right"></object>
+	  </p>
+	  
+	  <!--
 	  <iframe width="200" height="200" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/44538569&amp;auto_play=true&amp;hide_related=true&amp;show_comments=false&amp;show_user=false&amp;show_reposts=false&amp;visual=false"></iframe>
+	  -->
 	  
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/drood1/Riot_API_Challenge_2">Droodicus/Calccrypto Riot api challenge 2</a> is maintained by <a href="https://github.com/drood1">drood1</a>.</span>
