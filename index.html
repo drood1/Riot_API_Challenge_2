@@ -15,7 +15,7 @@
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>
 	
 	<script type="text/javascript">
-		var toggle = false;
+		var toggle = true;
 		var both_charts = false;
 		
 		function numCharts()	{
@@ -62,30 +62,34 @@
 		visibility: visible
 	 }
 	 
-	 .right {
-		position: absolute;
-		right: 0px;
-		width: 650px;
+	 object.right {
+	    border: 3px solid #8AC007;
+		position: relative;
+		left: 440px;
+		top: -530px;
+		width: 615px;
 		padding: 0px;
 	 }
 	 
-	 .left {
-		position: absolute;
-		left: 0px;
-		width: 650px;
+	 object.left {
+	    border: 3px solid #8AC007;
+		position: relative;
+		left: -200px;
+		width: 615px;
 		padding: 0px;
 	 }
 	 
-	 .center {
-		position: absolute;
-		align="center";
-		width: 650px;
+	 object.center {
+	    border: 3px solid #8AC007;
+		position: relative;
+		left: 100px;
+		width: 615px;
 		padding: 0px;
 	 }
 	 
 	 
 	 .bottom	{
-		position: absolute;
+		position: fixed;
 		bottom: 0px;
 		width: 650px;
 		padding: 0px;
@@ -109,8 +113,8 @@
 <a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
 -->
       <!-- <marquee><p>AND HIS NAME IS JASON CENA!!!!</p></marquee> -->
-	  <input type="button" value="Toggle Patch" onclick="changeChart()"/>
-	  <input type="button" value="Side-by-Side Comparison" onclick="bothCharts()"/>
+	  <input type="button" value="Toggle Patch" onclick="changeChart()" class="center"/>
+	  <input type="button" value="Side-by-Side Comparison" onclick="bothCharts()" class="center"/>
 	  
 	  <p>
       <object name="test chart" id = "graph" type="text/html" width="650" height="500" data ="pre_patch_chart.html" class="center"></object>
@@ -136,4 +140,9 @@
 
   
   </body>
+  <footer>
+	<p>Posted by: Hege Refsnes</p>
+	<p>Contact information: <a href="mailto:someone@example.com">
+	someone@example.com</a>.</p>
+  </footer>
 </html>
